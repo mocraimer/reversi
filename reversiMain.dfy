@@ -348,10 +348,59 @@ method InitBoard() returns (b: Board)
 	b := map[(3,3):=White, (3,4):=Black, (4,3):=Black, (4,4):=White];
 }
 
+lemma L1(i : nat,j : nat, b: Board, whites: nat, blacks : nat)
+requires ValidBoard(b) && scoreUpToIJ(8,8,b,whites,blacks)
+ensures whites == Count(b,White)
+ensures blacks == Count(b,Black)
+
+
+
+predicate scoreUpToIJ(i : nat,j : nat, b: Board, whites: nat, blacks : nat)
+	requires ValidBoard(b)
+	requires (i,j) in ValidPositions()
+{
+	whites == |(set pos | pos in ValidPositions() && pos in VectorPositionsUpLeftFrom((i,j)) && OccupiedBy(b, pos, White) )| &&
+	blacks == |(set pos | pos in ValidPositions() && pos in VectorPositionsUpLeftFrom((i,j)) && OccupiedBy(b, pos, Black) )|
+}
+
 method TotalScore(b: Board) returns (blacks: nat, whites: nat)
 	requires ValidBoard(b)
 	ensures whites == Count(b,White)
 	ensures blacks == Count(b,Black)
+{
+	var n:nat := 7;
+	var j,i: nat := 0,0;
+	assert  ValidBoard(b);
+	whites := 0;
+	blacks := 0;
+	while i <= n
+	decreases n-i
+	invariant scoreUpToIJ(i,j,b,whites,blacks) && j <= n && i <= n
+	{
+		j := 0;
+		while j <= n
+		invariant scoreUpToIJ(i,j,b,whites,blacks) && j <= n && i <= n
+		decreases n-j
+		{
+			if(b[(i,j)] == White){
+				whites := whites + 1;
+			}
+			else if(b[(i,j)] == Black){
+				blacks := blacks + 1;
+			}
+			else { // do nothing
+			}
+			j := j+1;
+		}
+		assert j >= n;
+		i := i+1;
+	}
+	assert i >= n && j >= n;
+	assert scoreUpToIJ(8,8,b,whites,blacks);
+	L1(8,8,b,whites,blacks);
+	assert whites == Count(b,White);
+	assert blacks == Count(b,Black);
+}
 
 method FindAllLegalDirectionsFrom(b: Board, player: Disk, move: Position) returns (directions: set<Direction>)
 	requires ValidBoard(b) && LegalMove(b, player, move)
