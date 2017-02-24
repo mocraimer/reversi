@@ -268,6 +268,7 @@ function VectorPositionsDownLeftFrom(pos: Position): seq<Position>
 	if pos.0 == 7 || pos.1 == 0 then [pos] else [pos]+VectorPositionsDownLeftFrom((pos.0+1,pos.1-1))
 }
 
+
 function VectorPositionsLeftFrom(pos: Position): seq<Position>
 	requires pos in ValidPositions()
 	ensures var result := VectorPositionsLeftFrom(pos);
@@ -370,40 +371,28 @@ method TotalScore(b: Board) returns (blacks: nat, whites: nat)
 	ensures whites == Count(b,White)
 	ensures blacks == Count(b,Black)
 {
-	var n:nat := 7;
-	var j,i: nat := 0,0;
+	var positionsToCheck : set<Position> := ValidPositions();
+	ghost var positionsChecked : Board := map[];
 	assert  ValidBoard(b);
 	whites := 0;
 	blacks := 0;
-	assert n <= 7;
-	while i <= n
-	decreases n-i
-	//invariant i <=8 && j <= 8 && scoreUpToIJ(i,j,b,whites,blacks) 
+	while positionsToCheck != {}
+	decreases positionsToCheck
+	invariant whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black)
 	{
-		assert i <= 7;
-		j := 0;
-		while j <= n
-		//invariant i <=8 && j <= 8 && scoreUpToIJ(i,j,b,whites,blacks) 
-		decreases n-j
-		{
-			if((i,j) in b){
-				if(b[(i,j)] == White){
-					whites := whites + 1;
-				}
-				else if(b[(i,j)] == Black){
-					blacks := blacks + 1;
-				}
-			}
-			else { // do nothing
-				}
-			j := j+1;
-			
+		var pos : Position :| pos in positionsToCheck;
+		positionsToCheck := positionsToCheck - {pos};
+		if(pos in b){
+
+		
+		positionsChecked := positionsChecked[pos := Black];
 		}
-			assert j == 8;
-			i := i+1;
-			assert i <= 7;
+		else{
+		//nothing to do
+		}
+
+		
 	}
-	assert scoreUpToIJ(8,8,b,whites,blacks);
 	assert whites == Count(b,White);
 	assert blacks == Count(b,Black);
 }
@@ -419,6 +408,7 @@ method FindAllReversiblePositionsFrom(b: Board, player: Disk, move: Position) re
 method FindAllLegalMoves(b: Board, player: Disk) returns (moves: set<Position>)
 	requires ValidBoard(b)
 	ensures moves == AllLegalMoves(b, player)
+
 
 method PerformMove(b0: Board, player: Disk, move: Position) returns (b: Board)
 	requires ValidBoard(b0) && LegalMove(b0, player, move)
