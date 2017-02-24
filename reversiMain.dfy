@@ -349,7 +349,9 @@ method InitBoard() returns (b: Board)
 }
 
 lemma L1(i : nat,j : nat, b: Board, whites: nat, blacks : nat)
-requires ValidBoard(b) && scoreUpToIJ(8,8,b,whites,blacks)
+requires ValidBoard(b) 
+requires (i,j) in ValidPositions()
+requires scoreUpToIJ(7,8,b,whites,blacks)
 ensures whites == Count(b,White)
 ensures blacks == Count(b,Black)
 
@@ -357,10 +359,10 @@ ensures blacks == Count(b,Black)
 
 predicate scoreUpToIJ(i : nat,j : nat, b: Board, whites: nat, blacks : nat)
 	requires ValidBoard(b)
-	requires (i,j) in ValidPositions()
+	requires forall k : nat :: k < j ==> (i,k) in ValidPositions()
 {
-	whites == |(set pos | pos in ValidPositions() && pos in VectorPositionsUpLeftFrom((i,j)) && OccupiedBy(b, pos, White) )| &&
-	blacks == |(set pos | pos in ValidPositions() && pos in VectorPositionsUpLeftFrom((i,j)) && OccupiedBy(b, pos, Black) )|
+	whites == |(set pos : Position | pos in ValidPositions() :: pos.0 == i && pos.1 < j && OccupiedBy(b, pos, White) )| + |(set pos : Position | pos in ValidPositions() :: pos.0 < i && pos.1 <= 7 && OccupiedBy(b, pos, White) )| &&
+	blacks == |(set pos : Position | pos in ValidPositions() :: pos.0 == i && pos.1 < j && OccupiedBy(b, pos, Black) )| + |(set pos : Position | pos in ValidPositions() :: pos.0 < i && pos.1 <= 7 && OccupiedBy(b, pos, Black) )|
 }
 
 method TotalScore(b: Board) returns (blacks: nat, whites: nat)
@@ -373,31 +375,35 @@ method TotalScore(b: Board) returns (blacks: nat, whites: nat)
 	assert  ValidBoard(b);
 	whites := 0;
 	blacks := 0;
+	assert n <= 7;
 	while i <= n
 	decreases n-i
-	invariant scoreUpToIJ(i,j,b,whites,blacks) && j <= n && i <= n
+	//invariant i <=8 && j <= 8 && scoreUpToIJ(i,j,b,whites,blacks) 
 	{
+		assert i <= 7;
 		j := 0;
 		while j <= n
-		invariant scoreUpToIJ(i,j,b,whites,blacks) && j <= n && i <= n
+		//invariant i <=8 && j <= 8 && scoreUpToIJ(i,j,b,whites,blacks) 
 		decreases n-j
 		{
-			if(b[(i,j)] == White){
-				whites := whites + 1;
-			}
-			else if(b[(i,j)] == Black){
-				blacks := blacks + 1;
+			if((i,j) in b){
+				if(b[(i,j)] == White){
+					whites := whites + 1;
+				}
+				else if(b[(i,j)] == Black){
+					blacks := blacks + 1;
+				}
 			}
 			else { // do nothing
-			}
+				}
 			j := j+1;
+			
 		}
-		assert j >= n;
-		i := i+1;
+			assert j == 8;
+			i := i+1;
+			assert i <= 7;
 	}
-	assert i >= n && j >= n;
 	assert scoreUpToIJ(8,8,b,whites,blacks);
-	L1(8,8,b,whites,blacks);
 	assert whites == Count(b,White);
 	assert blacks == Count(b,Black);
 }
