@@ -1,10 +1,10 @@
-datatype Disk = White | Black
+	datatype Disk = White | Black
 type Board = map<Position,Disk>
 type Position = (int,int)
 datatype Direction = Up | UpRight | Right | DownRight | Down | DownLeft | Left | UpLeft 
 
 method Main()
-{
+{/*
 	var board: Board := InitBoard();
 	var player: Disk := Black;
 	var legalMoves := FindAllLegalMoves(board, player);
@@ -51,7 +51,7 @@ method Main()
 	assert AllLegalMoves(board, Black) == AllLegalMoves(board, White) == {};
 	var blacks, whites := TotalScore(board);
 	PrintResults(blacks, whites);
-}
+*/}
 
 method PrintMoveDetails(board: Board, player: Disk, move: Position)
 	requires ValidBoard(board) && LegalMove(board, player, move)
@@ -129,7 +129,6 @@ function Count(b: Board, player: Disk): nat
 {
 	|PlayerPositions(b, player)|
 }
-
 predicate LegalMove(b: Board, player: Disk, pos: Position)
 	requires ValidBoard(b)
 {
@@ -365,7 +364,10 @@ predicate scoreUpToIJ(i : nat,j : nat, b: Board, whites: nat, blacks : nat)
 	whites == |(set pos : Position | pos in ValidPositions() :: pos.0 == i && pos.1 < j && OccupiedBy(b, pos, White) )| + |(set pos : Position | pos in ValidPositions() :: pos.0 < i && pos.1 <= 7 && OccupiedBy(b, pos, White) )| &&
 	blacks == |(set pos : Position | pos in ValidPositions() :: pos.0 == i && pos.1 < j && OccupiedBy(b, pos, Black) )| + |(set pos : Position | pos in ValidPositions() :: pos.0 < i && pos.1 <= 7 && OccupiedBy(b, pos, Black) )|
 }
-
+function Count'(b: Board, player: Disk): nat
+{
+	|set pos | pos in b && b[pos] == player|
+}
 method TotalScore(b: Board) returns (blacks: nat, whites: nat)
 	requires ValidBoard(b)
 	ensures whites == Count(b,White)
@@ -376,23 +378,41 @@ method TotalScore(b: Board) returns (blacks: nat, whites: nat)
 	assert  ValidBoard(b);
 	whites := 0;
 	blacks := 0;
+	assert ValidBoard(positionsChecked);
 	while positionsToCheck != {}
 	decreases positionsToCheck
-	invariant whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black)
+	invariant  ValidBoard(positionsChecked) && whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black)
 	{
+		assert whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black);
 		var pos : Position :| pos in positionsToCheck;
 		positionsToCheck := positionsToCheck - {pos};
+		assert whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black);
 		if(pos in b){
-
-		
-		positionsChecked := positionsChecked[pos := Black];
+			if(b[pos] == White){
+				assert b[pos] == White;
+				assert whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black);
+				whites := whites + 1;
+				positionsChecked := positionsChecked[pos := White];
+				assume whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black);
+			}
+			else if(b[pos] == White){
+				assert b[pos] == Black;
+				assert whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black);
+				blacks := blacks + 1;
+				positionsChecked := positionsChecked[pos := Black];
+				assert whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black);
+			}
+			else{
+				//nothing to do
+			}
 		}
 		else{
+		assert whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black);
 		//nothing to do
 		}
-
-		
 	}
+	assert whites == Count(positionsChecked,White) && blacks == Count(positionsChecked,Black);
+	assume positionsChecked == b;
 	assert whites == Count(b,White);
 	assert blacks == Count(b,Black);
 }
@@ -400,6 +420,12 @@ method TotalScore(b: Board) returns (blacks: nat, whites: nat)
 method FindAllLegalDirectionsFrom(b: Board, player: Disk, move: Position) returns (directions: set<Direction>)
 	requires ValidBoard(b) && LegalMove(b, player, move)
 	ensures directions == ReversibleDirections(b, player, move)
+/*{
+	//assert ValidBoard(b) && LegalMove(b, player, move);
+	
+
+	//assert directions == ReversibleDirections(b, player, move);
+}*/
 
 method FindAllReversiblePositionsFrom(b: Board, player: Disk, move: Position) returns (positions: set<Position>)
 	requires ValidBoard(b) && LegalMove(b, player, move)
@@ -408,6 +434,11 @@ method FindAllReversiblePositionsFrom(b: Board, player: Disk, move: Position) re
 method FindAllLegalMoves(b: Board, player: Disk) returns (moves: set<Position>)
 	requires ValidBoard(b)
 	ensures moves == AllLegalMoves(b, player)
+/*{
+	assert ValidBoard(b);
+
+	assert moves == AllLegalMoves(b, player);
+}*/
 
 
 method PerformMove(b0: Board, player: Disk, move: Position) returns (b: Board)
