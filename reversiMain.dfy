@@ -323,34 +323,40 @@ lemma LemmaInitBlackHasLegalMoves(b: Board)
 	}
 }
 
-method canReverseUpFrom(b: Board, player: Disk, move: Position) returns (is : bool)
+method canReverseUpFrom(b: Board, player: Disk, move: Position) returns (reversibalePositions : seq<Position>)
 	requires ValidBoard(b) && LegalMove(b, player, move)
-	ensures is == true ==> Up in ReversibleDirections(b, player, move)
+	ensures |reversibalePositions|>0 ==> Up in ReversibleDirections(b, player, move)
+	ensures forall pos :: pos in reversibalePositions  ==>  pos in ReversibleVectorPositions(b, player, move, Up)
 {
-/*	is := false;
-	if(move.0 > 0){
-		var row : nat := move.0 - 1;
-		var opp := getOpponent(player);
-		while row != 0 && (row, move.0) in b && (b[(row,move.1)] == opp) && (row-1 , move.1) in b 
+	var opponent := getOpponent(player);
+	var dirValid := false;
+	var row := move.0 - 2;
+	reversibalePositions := [];
+	if(move.0 == 0 || ((move.0-1, move.1) in b && b[(move.0-1, move.1)] != opponent)){ //donothing
+	}
+	else{
+
+		while(!dirValid && row>=0)
 		decreases row
 		{
-			if(b[(row,move.0)] == opp){
-				if(b[(row-1,move.0)] == player)
-				{
-					is := true;
-				}
-				else{
-					//do nothing is will stay false
-				}
+			if((row, move.1) in b && b[(row, move.1)] == player){
+				dirValid := true;
 			}
 			else{
-				//do nothing is will stay false
+				reversibalePositions := reversibalePositions + [(row, move.1)];
 			}
-			row := row - 1;
+			row:= row-1;
+			
 		}
-	}*/
-	assume is == true ==> Up in ReversibleDirections(b, player, move);
+		if(dirValid){//do nothing
+		}
+		else{
+			reversibalePositions:=[];
+		}
+	}
+
 }
+
 method getOpponent(player: Disk) returns (opp : Disk) 
 {
 	if (player == White){
@@ -366,7 +372,7 @@ method canReverseInDir(b: Board, player: Disk, move: Position, dir: Direction) r
 {
 	assert ValidBoard(b) && LegalMove(b, player, move);
 	if(dir == Up){
-		is := canReverseUpFrom(b,player,move);
+		//is := canReverseUpFrom(b,player,move);
 	}
 	else if(dir == UpRight){
 	//	is := canReverseFrom(b,player,move,UpRight,1,1);
@@ -470,6 +476,8 @@ method TotalScore(b: Board) returns (blacks: nat, whites: nat)
 	assert whites == Count(b,White);
 	assert blacks == Count(b,Black);
 }
+
+
 
 method FindAllLegalDirectionsFrom(b: Board, player: Disk, move: Position) returns (directions: set<Direction>)
 	requires ValidBoard(b) && LegalMove(b, player, move)
