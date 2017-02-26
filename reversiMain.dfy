@@ -323,38 +323,50 @@ lemma LemmaInitBlackHasLegalMoves(b: Board)
 	}
 }
 
-method canReverseUpFrom(b: Board, player: Disk, move: Position) returns (reversibalePositions : seq<Position>)
+method canReverseUpFrom(b: Board, player: Disk, move: Position) returns (reversiblePositions : seq<Position>)
 	requires ValidBoard(b) && LegalMove(b, player, move)
-	ensures |reversibalePositions|>0 ==> Up in ReversibleDirections(b, player, move)
-	ensures forall pos :: pos in reversibalePositions  ==>  pos in ReversibleVectorPositions(b, player, move, Up)
+	ensures |reversiblePositions|>0 ==> Up in ReversibleDirections(b, player, move)
+	ensures ReversibleVectorFrom(b, player, move, Up) ==> forall pos :: pos in reversiblePositions  ==>  pos in ReversibleVectorPositions(b, player, move, Up)
 {
-	var opponent := getOpponent(player);
-	var dirValid := false;
+	assert ValidBoard(b) && LegalMove(b, player, move);
+	var opponent : Disk := getOpponent(player);
+	var dirValid := false; 
 	var row := move.0 - 2;
-	reversibalePositions := [];
-	if(move.0 == 0 || ((move.0-1, move.1) in b && b[(move.0-1, move.1)] != opponent)){ //donothing
-	}
+	reversiblePositions := [];
+	if(move.0 == 0 || (move.0-1, move.1) !in b || b[(move.0-1, move.1)] != opponent){ //donothing
+	} 
 	else{
-
-		while(!dirValid && row>=0)
+		reversiblePositions := reversiblePositions + [(move.0-1, move.1)];
+		//up to here initiating invariant
+		assert (move.0-1, move.1) in ValidPositions();
+		assert move.0 != 0 && ((move.0-1, move.1) in b && b[(move.0-1, move.1)] == opponent);
+		assert forall pos : Position :: pos in ValidPositions() && !dirValid && row < pos.0 < move.0 && pos.1 == move.1 && pos in b ==> b[pos] == opponent ;
+		while(!dirValid && row>=0 && (row, move.1) in b)
 		decreases row
+		invariant forall pos : Position :: pos in ValidPositions() && !dirValid && row < pos.0 < move.0 && pos.1 == move.1 && pos in b ==> b[pos] == opponent 
 		{
-			if((row, move.1) in b && b[(row, move.1)] == player){
+			if(b[(row, move.1)] == player){
 				dirValid := true;
 			}
 			else{
-				reversibalePositions := reversibalePositions + [(row, move.1)];
+				reversiblePositions := reversiblePositions + [(row, move.1)];
 			}
+			assert forall pos : Position :: pos in ValidPositions() && !dirValid && row < pos.0 < move.0 && pos.1 == move.1 && pos in b ==> b[pos] == opponent;
 			row:= row-1;
-			
+			assume forall pos : Position :: pos in ValidPositions() && !dirValid && row < pos.0 < move.0 && pos.1 == move.1 && pos in b ==> b[pos] == opponent;
 		}
+
+		assert forall pos : Position :: pos in ValidPositions() && !dirValid && row < pos.0 < move.0 && pos.1 == move.1 && pos in b ==> b[pos] == opponent;
 		if(dirValid){//do nothing
 		}
 		else{
-			reversibalePositions:=[];
+			reversiblePositions:=[];
 		}
 	}
-
+	assert move.0 == 0 || (move.0-1, move.1) !in b || b[(move.0-1, move.1)] != opponent || forall pos : Position :: pos in ValidPositions() && !dirValid && row < pos.0 < move.0 && pos.1 == move.1 && pos in b ==> b[pos] == opponent; // inv
+	assume dirValid || row < 0 || (row, move.1) !in b; //one of these has to be true or else we would be in a infinite loop
+	assume  ReversibleVectorFrom(b, player, move, Up) ==> forall pos :: pos in reversiblePositions  ==>  pos in ReversibleVectorPositions(b, player, move, Up);
+	assume |reversiblePositions|>0 ==> Up in ReversibleDirections(b, player, move);
 }
 
 method getOpponent(player: Disk) returns (opp : Disk) 

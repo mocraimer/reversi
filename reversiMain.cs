@@ -1704,63 +1704,6 @@ public partial class @__default {
   public static void @Main()
   {
   TAIL_CALL_START: ;
-    Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> @_3020_board = Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk>.Empty;
-    Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> _out0;
-    @__default.@InitBoard(out _out0);
-    @_3020_board = _out0;
-    @Disk @_3021_player = new @Disk();
-    @_3021_player = new @Disk(new Disk_Black());
-    Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> @_3022_legalMoves = Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>>.Empty;
-    Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> _out1;
-    @__default.@FindAllLegalMoves(@_3020_board, @_3021_player, out _out1);
-    @_3022_legalMoves = _out1;
-    { }
-    while (!(new BigInteger((@_3022_legalMoves).Length)).@Equals(new BigInteger(0)))
-    {
-      @_System.@__tuple_h2<BigInteger,BigInteger> @_3023_move = new @_System.@__tuple_h2<BigInteger,BigInteger>();
-      if ((@_3021_player).@Equals(new @Disk(new Disk_Black())))
-      {
-        { }
-        { }
-        { }
-        @_System.@__tuple_h2<BigInteger,BigInteger> _out2;
-        @__default.@SelectBlackMove(@_3020_board, @_3022_legalMoves, out _out2);
-        @_3023_move = _out2;
-      }
-      else
-      {
-        { }
-        { }
-        { }
-        @_System.@__tuple_h2<BigInteger,BigInteger> _out3;
-        @__default.@SelectWhiteMove(@_3020_board, @_3022_legalMoves, out _out3);
-        @_3023_move = _out3;
-      }
-      @__default.@PrintMoveDetails(@_3020_board, @_3021_player, @_3023_move);
-      Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> _out4;
-      @__default.@PerformMove(@_3020_board, @_3021_player, @_3023_move, out _out4);
-      @_3020_board = _out4;
-      @_3021_player = ((@_3021_player).@Equals(new @Disk(new Disk_Black()))) ? (new @Disk(new Disk_White())) : (new @Disk(new Disk_Black()));
-      Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> _out5;
-      @__default.@FindAllLegalMoves(@_3020_board, @_3021_player, out _out5);
-      @_3022_legalMoves = _out5;
-      if ((new BigInteger((@_3022_legalMoves).Length)).@Equals(new BigInteger(0)))
-      {
-        @_3021_player = ((@_3021_player).@Equals(new @Disk(new Disk_White()))) ? (new @Disk(new Disk_Black())) : (new @Disk(new Disk_White()));
-        Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> _out6;
-        @__default.@FindAllLegalMoves(@_3020_board, @_3021_player, out _out6);
-        @_3022_legalMoves = _out6;
-      }
-    }
-    { }
-    BigInteger @_3024_blacks = BigInteger.Zero;
-    BigInteger @_3025_whites = BigInteger.Zero;
-    BigInteger _out7;
-    BigInteger _out8;
-    @__default.@TotalScore(@_3020_board, out _out7, out _out8);
-    @_3024_blacks = _out7;
-    @_3025_whites = _out8;
-    @__default.@PrintResults(@_3024_blacks, @_3025_whites);
   }
   public static void @PrintMoveDetails(Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> @board, @Disk @player, @_System.@__tuple_h2<BigInteger,BigInteger> @move)
   {
@@ -1771,18 +1714,18 @@ public partial class @__default {
     System.Console.Write((@move).@dtor__0);
     System.Console.Write(Dafny.Sequence<char>.FromString(" and column "));
     System.Console.Write((@move).@dtor__1);
-    Dafny.Set<@Direction> @_3026_reversibleDirections = Dafny.Set<@Direction>.Empty;
-    Dafny.Set<@Direction> _out9;
-    @__default.@FindAllLegalDirectionsFrom(@board, @player, @move, out _out9);
-    @_3026_reversibleDirections = _out9;
+    Dafny.Set<@Direction> @_55690_reversibleDirections = Dafny.Set<@Direction>.Empty;
+    Dafny.Set<@Direction> _out0;
+    @__default.@FindAllLegalDirectionsFrom(@board, @player, @move, out _out0);
+    @_55690_reversibleDirections = _out0;
     System.Console.Write(Dafny.Sequence<char>.FromString(" with reversible directions "));
-    System.Console.Write(@_3026_reversibleDirections);
-    Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> @_3027_reversiblePositions = Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>>.Empty;
-    Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> _out10;
-    @__default.@FindAllReversiblePositionsFrom(@board, @player, @move, out _out10);
-    @_3027_reversiblePositions = _out10;
+    System.Console.Write(@_55690_reversibleDirections);
+    Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> @_55691_reversiblePositions = Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>>.Empty;
+    Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> _out1;
+    @__default.@FindAllReversiblePositionsFrom(@board, @player, @move, out _out1);
+    @_55691_reversiblePositions = _out1;
     System.Console.Write(Dafny.Sequence<char>.FromString(" and reversible positions "));
-    System.Console.Write(@_3027_reversiblePositions);
+    System.Console.Write(@_55691_reversiblePositions);
   }
   public static void @PrintResults(BigInteger @blacks, BigInteger @whites)
   {
@@ -1798,6 +1741,104 @@ public partial class @__default {
   public static Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> @ValidPositions() {
     return Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>>.FromElements(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(0), new BigInteger(0))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(0), new BigInteger(1))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(0), new BigInteger(2))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(0), new BigInteger(3))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(0), new BigInteger(4))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(0), new BigInteger(5))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(0), new BigInteger(6))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(0), new BigInteger(7))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(1), new BigInteger(0))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(1), new BigInteger(1))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(1), new BigInteger(2))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(1), new BigInteger(3))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(1), new BigInteger(4))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(1), new BigInteger(5))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(1), new BigInteger(6))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(1), new BigInteger(7))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(2), new BigInteger(0))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(2), new BigInteger(1))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(2), new BigInteger(2))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(2), new BigInteger(3))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(2), new BigInteger(4))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(2), new BigInteger(5))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(2), new BigInteger(6))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(2), new BigInteger(7))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(3), new BigInteger(0))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(3), new BigInteger(1))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(3), new BigInteger(2))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(3), new BigInteger(3))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(3), new BigInteger(4))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(3), new BigInteger(5))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(3), new BigInteger(6))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(3), new BigInteger(7))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(4), new BigInteger(0))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(4), new BigInteger(1))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(4), new BigInteger(2))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(4), new BigInteger(3))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(4), new BigInteger(4))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(4), new BigInteger(5))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(4), new BigInteger(6))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(4), new BigInteger(7))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(5), new BigInteger(0))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(5), new BigInteger(1))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(5), new BigInteger(2))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(5), new BigInteger(3))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(5), new BigInteger(4))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(5), new BigInteger(5))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(5), new BigInteger(6))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(5), new BigInteger(7))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(6), new BigInteger(0))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(6), new BigInteger(1))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(6), new BigInteger(2))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(6), new BigInteger(3))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(6), new BigInteger(4))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(6), new BigInteger(5))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(6), new BigInteger(6))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(6), new BigInteger(7))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(7), new BigInteger(0))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(7), new BigInteger(1))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(7), new BigInteger(2))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(7), new BigInteger(3))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(7), new BigInteger(4))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(7), new BigInteger(5))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(7), new BigInteger(6))), new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(7), new BigInteger(7))));
   }
+  public static void @canReverseUpFrom(Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> @b, @Disk @player, @_System.@__tuple_h2<BigInteger,BigInteger> @move, out Dafny.Sequence<@_System.@__tuple_h2<BigInteger,BigInteger>> @reversiblePositions)
+  {
+    @reversiblePositions = Dafny.Sequence<@_System.@__tuple_h2<BigInteger,BigInteger>>.Empty;
+    { }
+    @Disk @_55692_opponent = new @Disk();
+    @Disk _out2;
+    @__default.@getOpponent(@player, out _out2);
+    @_55692_opponent = _out2;
+    bool @_55693_dirValid = false;
+    @_55693_dirValid = false;
+    BigInteger @_55694_row = BigInteger.Zero;
+    @_55694_row = ((@move).@dtor__0) - (new BigInteger(2));
+    @reversiblePositions = Dafny.Sequence<@_System.@__tuple_h2<BigInteger,BigInteger>>.FromElements();
+    if ((((@move).@dtor__0).@Equals(new BigInteger(0))) || ((!(@b).@Contains(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(((@move).@dtor__0) - (new BigInteger(1)), (@move).@dtor__1)))) || (!((@b).Select(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(((@move).@dtor__0) - (new BigInteger(1)), (@move).@dtor__1)))).@Equals(@_55692_opponent))))
+    {
+    }
+    else
+    {
+      @reversiblePositions = (@reversiblePositions).@Concat(Dafny.Sequence<@_System.@__tuple_h2<BigInteger,BigInteger>>.FromElements(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(((@move).@dtor__0) - (new BigInteger(1)), (@move).@dtor__1))));
+      { }
+      { }
+      while (((!(@_55693_dirValid)) && ((@_55694_row) >= (new BigInteger(0)))) && ((@b).@Contains(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(@_55694_row, (@move).@dtor__1)))))
+      {
+        if (((@b).Select(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(@_55694_row, (@move).@dtor__1)))).@Equals(@player))
+        {
+          @_55693_dirValid = true;
+        }
+        else
+        {
+          @reversiblePositions = (@reversiblePositions).@Concat(Dafny.Sequence<@_System.@__tuple_h2<BigInteger,BigInteger>>.FromElements(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(@_55694_row, (@move).@dtor__1))));
+        }
+        @_55694_row = (@_55694_row) - (new BigInteger(1));
+        { }
+      }
+      if (@_55693_dirValid)
+      {
+      }
+      else
+      {
+        @reversiblePositions = Dafny.Sequence<@_System.@__tuple_h2<BigInteger,BigInteger>>.FromElements();
+      }
+    }
+  }
+  public static void @getOpponent(@Disk @player, out @Disk @opp)
+  {
+    @opp = new @Disk();
+  TAIL_CALL_START: ;
+    if ((@player).@Equals(new @Disk(new Disk_White())))
+    {
+      @opp = new @Disk(new Disk_Black());
+    }
+    else
+    {
+      @opp = new @Disk(new Disk_White());
+    }
+  }
+  public static void @canReverseInDir(Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> @b, @Disk @player, @_System.@__tuple_h2<BigInteger,BigInteger> @move, @Direction @dir, out bool @is)
+  {
+    @is = false;
+    { }
+    if ((@dir).@Equals(new @Direction(new Direction_Up())))
+    {
+    }
+    else
+    if ((@dir).@Equals(new @Direction(new Direction_UpRight())))
+    {
+    }
+    else
+    if ((@dir).@Equals(new @Direction(new Direction_Right())))
+    {
+    }
+    else
+    if ((@dir).@Equals(new @Direction(new Direction_DownRight())))
+    {
+    }
+    else
+    if ((@dir).@Equals(new @Direction(new Direction_Down())))
+    {
+    }
+    else
+    if ((@dir).@Equals(new @Direction(new Direction_DownLeft())))
+    {
+    }
+    else
+    if ((@dir).@Equals(new @Direction(new Direction_Left())))
+    {
+    }
+    else
+    if ((@dir).@Equals(new @Direction(new Direction_UpLeft())))
+    {
+    }
+    else
+    {
+      @is = false;
+    }
+/* Compilation error: an assume statement cannot be compiled (line 407) */
+    { }
+  }
   public static void @SelectBlackMove(Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> @b, Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> @moves, out @_System.@__tuple_h2<BigInteger,BigInteger> @pos)
   {
     @pos = new @_System.@__tuple_h2<BigInteger,BigInteger>();
@@ -1807,7 +1848,7 @@ public partial class @__default {
         goto _ASSIGN_SUCH_THAT_0;
       }
     }
-    throw new System.Exception("assign-such-that search produced no value (line 333)");
+    throw new System.Exception("assign-such-that search produced no value (line 416)");
     _ASSIGN_SUCH_THAT_0: ;
   }
   public static void @SelectWhiteMove(Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> @b, Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> @moves, out @_System.@__tuple_h2<BigInteger,BigInteger> @pos)
@@ -1819,7 +1860,7 @@ public partial class @__default {
         goto _ASSIGN_SUCH_THAT_1;
       }
     }
-    throw new System.Exception("assign-such-that search produced no value (line 342)");
+    throw new System.Exception("assign-such-that search produced no value (line 425)");
     _ASSIGN_SUCH_THAT_1: ;
   }
   public static void @InitBoard(out Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> @b)
@@ -1828,34 +1869,95 @@ public partial class @__default {
   TAIL_CALL_START: ;
     @b = Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk>.FromElements(new Dafny.Pair<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk>(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(3), new BigInteger(3))),new @Disk(new Disk_White())), new Dafny.Pair<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk>(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(3), new BigInteger(4))),new @Disk(new Disk_Black())), new Dafny.Pair<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk>(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(4), new BigInteger(3))),new @Disk(new Disk_Black())), new Dafny.Pair<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk>(new @_System.@__tuple_h2<BigInteger,BigInteger>(new _System.@__tuple_h2____hMake2<BigInteger,BigInteger>(new BigInteger(4), new BigInteger(4))),new @Disk(new Disk_White())));
   }
-/* Compilation error: Method _module._default.L1 has no body */
   public static void @TotalScore(Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> @b, out BigInteger @blacks, out BigInteger @whites)
   {
     @blacks = BigInteger.Zero;
     @whites = BigInteger.Zero;
-    Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> @_3028_positionsToCheck = Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>>.Empty;
-    @_3028_positionsToCheck = @__default.@ValidPositions();
+    Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>> @_55695_positionsToCheck = Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>>.Empty;
+    @_55695_positionsToCheck = @__default.@ValidPositions();
     { }
     { }
     @whites = new BigInteger(0);
     @blacks = new BigInteger(0);
-    while (!(@_3028_positionsToCheck).@Equals(Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>>.FromElements()))
+    { }
+    while (!(@_55695_positionsToCheck).@Equals(Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>>.FromElements()))
     {
-      @_System.@__tuple_h2<BigInteger,BigInteger> @_3029_pos = new @_System.@__tuple_h2<BigInteger,BigInteger>();
-      foreach (var _assign_such_that_2 in (@_3028_positionsToCheck).Elements) { @_3029_pos = _assign_such_that_2;
-        if ((@_3028_positionsToCheck).@Contains(@_3029_pos)) {
+      { }
+      @_System.@__tuple_h2<BigInteger,BigInteger> @_55696_pos = new @_System.@__tuple_h2<BigInteger,BigInteger>();
+      foreach (var _assign_such_that_2 in (@_55695_positionsToCheck).Elements) { @_55696_pos = _assign_such_that_2;
+        if ((@_55695_positionsToCheck).@Contains(@_55696_pos)) {
           goto _ASSIGN_SUCH_THAT_2;
         }
       }
-      throw new System.Exception("assign-such-that search produced no value (line 384)");
+      throw new System.Exception("assign-such-that search produced no value (line 451)");
       _ASSIGN_SUCH_THAT_2: ;
-      @_3028_positionsToCheck = (@_3028_positionsToCheck).@Difference(Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>>.FromElements(@_3029_pos));
+      @_55695_positionsToCheck = (@_55695_positionsToCheck).@Difference(Dafny.Set<@_System.@__tuple_h2<BigInteger,BigInteger>>.FromElements(@_55696_pos));
+      { }
+      if ((@b).@Contains(@_55696_pos))
+      {
+        if (((@b).Select(@_55696_pos)).@Equals(new @Disk(new Disk_White())))
+        {
+          { }
+          { }
+          @whites = (@whites) + (new BigInteger(1));
+          { }
+/* Compilation error: an assume statement cannot be compiled (line 461) */
+          { }
+        }
+        else
+        if (((@b).Select(@_55696_pos)).@Equals(new @Disk(new Disk_White())))
+        {
+          { }
+          { }
+          @blacks = (@blacks) + (new BigInteger(1));
+          { }
+          { }
+        }
+        else
+        { }
+      }
+      else
       { }
     }
     { }
+/* Compilation error: an assume statement cannot be compiled (line 480) */
+    { }
+    { }
     { }
   }
-/* Compilation error: Method _module._default.FindAllLegalDirectionsFrom has no body */
+  public static void @FindAllLegalDirectionsFrom(Dafny.Map<@_System.@__tuple_h2<BigInteger,BigInteger>,@Disk> @b, @Disk @player, @_System.@__tuple_h2<BigInteger,BigInteger> @move, out Dafny.Set<@Direction> @directions)
+  {
+    @directions = Dafny.Set<@Direction>.Empty;
+    { }
+    Dafny.Set<@Direction> @_55697_directionsToCheck = Dafny.Set<@Direction>.Empty;
+    @_55697_directionsToCheck = Dafny.Set<@Direction>.FromElements(new @Direction(new Direction_Up()), new @Direction(new Direction_UpRight()), new @Direction(new Direction_Right()), new @Direction(new Direction_DownRight()), new @Direction(new Direction_Down()), new @Direction(new Direction_DownLeft()), new @Direction(new Direction_Left()), new @Direction(new Direction_UpLeft()));
+    @directions = Dafny.Set<@Direction>.FromElements();
+    while (!(@_55697_directionsToCheck).@Equals(Dafny.Set<@Direction>.FromElements()))
+    {
+      @Direction @_55698_dir = new @Direction();
+      foreach (var _assign_such_that_3 in (@_55697_directionsToCheck).Elements) { @_55698_dir = _assign_such_that_3;
+        if ((@_55697_directionsToCheck).@Contains(@_55698_dir)) {
+          goto _ASSIGN_SUCH_THAT_3;
+        }
+      }
+      throw new System.Exception("assign-such-that search produced no value (line 498)");
+      _ASSIGN_SUCH_THAT_3: ;
+      bool @_55699_isReversible = false;
+      bool _out3;
+      @__default.@canReverseInDir(@b, @player, @move, @_55698_dir, out _out3);
+      @_55699_isReversible = _out3;
+      if (@_55699_isReversible)
+      {
+        @directions = (@directions).@Union(Dafny.Set<@Direction>.FromElements(@_55698_dir));
+      }
+      else
+      { }
+      @_55697_directionsToCheck = (@_55697_directionsToCheck).@Difference(Dafny.Set<@Direction>.FromElements(@_55698_dir));
+    }
+/* Compilation error: an assume statement cannot be compiled (line 509) */
+    { }
+    { }
+  }
 /* Compilation error: Method _module._default.FindAllReversiblePositionsFrom has no body */
 /* Compilation error: Method _module._default.FindAllLegalMoves has no body */
 /* Compilation error: Method _module._default.PerformMove has no body */
