@@ -89,30 +89,30 @@ function method ValidPositions(): set<Position>
 	}
 }
 
-predicate ValidPosition(pos: Position)
+function method ValidPosition(pos: Position) : bool
 {
 	pos in ValidPositions()
 }
 
-predicate AvailablePosition(b: Board, pos: Position)
+function method AvailablePosition(b: Board, pos: Position) : bool
 	requires ValidBoard(b)
 {
 	ValidPosition(pos) && pos !in b
 }
 
-predicate OccupiedPosition(b: Board, pos: Position)
+function method OccupiedPosition(b: Board, pos: Position) : bool
 	requires ValidBoard(b)
 {
 	ValidPosition(pos) && pos in b
 }
 
-predicate OccupiedBy(b: Board, pos: Position, player: Disk)
+function method OccupiedBy(b: Board, pos: Position, player: Disk) : bool
 	requires ValidBoard(b)
 {
 	OccupiedPosition(b, pos) && b[pos] == player
 }
 
-function AvailablePositions(b: Board): set<Position>
+function method AvailablePositions(b: Board): set<Position>
 	requires ValidBoard(b)
 {
 	set pos | pos in ValidPositions() && AvailablePosition(b, pos)
@@ -136,7 +136,7 @@ predicate LegalMove(b: Board, player: Disk, pos: Position)
 	exists direction: Direction :: ReversibleVectorFrom(b, player, pos, direction)
 }
 
-function Opponent(player: Disk): Disk
+function method Opponent(player: Disk): Disk
 {
 	if player == White then Black else White
 }
@@ -147,14 +147,14 @@ function AllLegalMoves(b: Board, player: Disk): set<Position>
 	set move: Position | move in AvailablePositions(b) && LegalMove(b, player, move)
 }
 
-function ReversiblePositionsFrom(b: Board, player: Disk, move: Position): set<Position>
+function method ReversiblePositionsFrom(b: Board, player: Disk, move: Position): set<Position>
 	requires ValidBoard(b)
 {
 	var reversibleDirections: set<Direction> := ReversibleDirections(b, player, move);
 	set pos | pos in ValidPositions() && exists d :: d in reversibleDirections && pos in ReversibleVectorPositions(b, player, move, d)
 }
 
-function ReversibleDirections(b: Board, player: Disk, move: Position): set<Direction>
+function method ReversibleDirections(b: Board, player: Disk, move: Position): set<Direction>
 	requires ValidBoard(b)
 	ensures var result := ReversibleDirections(b, player, move); forall dir :: dir in result ==> ReversibleVectorFrom(b, player, move, dir)
 {
@@ -162,14 +162,14 @@ function ReversibleDirections(b: Board, player: Disk, move: Position): set<Direc
 	set direction | ReversibleVectorFrom(b, player, move, direction)
 }
 
-predicate ReversibleVectorFrom(b: Board, player: Disk, move: Position, direction: Direction)
+function method ReversibleVectorFrom(b: Board, player: Disk, move: Position, direction: Direction) : bool
 	requires ValidBoard(b) && ValidPosition(move)
 {
 	var vector := VectorPositionsFrom(move, direction);
 	ReversibleVector(b, vector, player)
 }
 
-predicate ReversibleVector(b: Board, vector: seq<Position>, player: Disk)
+function method ReversibleVector(b: Board, vector: seq<Position>, player: Disk) : bool
 	requires ValidBoard(b)
 	requires forall pos :: pos in vector ==> ValidPosition(pos)
 {
@@ -178,7 +178,7 @@ predicate ReversibleVector(b: Board, vector: seq<Position>, player: Disk)
 		forall i :: 0 < i < j ==> OccupiedBy(b, vector[i], Opponent(player))
 }
 
-function ReversibleVectorPositions(b: Board, player: Disk, move: Position, direction: Direction): set<Position>
+function method ReversibleVectorPositions(b: Board, player: Disk, move: Position, direction: Direction): set<Position>
 	requires ValidBoard(b) && ValidPosition(move)
 	requires ReversibleVectorFrom(b, player, move, direction)
 { // collect the positions of all disks in the vector starting in the second position and ending before the first position occupied by an opponent
@@ -196,7 +196,7 @@ function ReversibleVectorPositions(b: Board, player: Disk, move: Position, direc
 	set pos | pos in positionsVector[1..firstCurrentPlayerDiskDistance]
 }
 
-function VectorPositionsFrom(pos: Position, dir: Direction): seq<Position>
+function method VectorPositionsFrom(pos: Position, dir: Direction): seq<Position>
 	requires pos in ValidPositions()
 	ensures var result := VectorPositionsFrom(pos, dir);
 		forall pos :: pos in result ==> ValidPosition(pos)
@@ -213,7 +213,7 @@ function VectorPositionsFrom(pos: Position, dir: Direction): seq<Position>
 	}
 }
 
-function VectorPositionsUpFrom(pos: Position): seq<Position>
+function method VectorPositionsUpFrom(pos: Position): seq<Position>
 	requires pos in ValidPositions()
 	ensures var result := VectorPositionsUpFrom(pos);
 		forall pos :: pos in result ==> ValidPosition(pos)
@@ -222,7 +222,7 @@ function VectorPositionsUpFrom(pos: Position): seq<Position>
 	if pos.0 == 0 then [pos] else [pos]+VectorPositionsUpFrom((pos.0-1,pos.1))
 }
 
-function VectorPositionsUpRightFrom(pos: Position): seq<Position>
+function method VectorPositionsUpRightFrom(pos: Position): seq<Position>
 	requires pos in ValidPositions()
 	ensures var result := VectorPositionsUpRightFrom(pos);
 		forall pos :: pos in result ==> ValidPosition(pos)
@@ -231,7 +231,7 @@ function VectorPositionsUpRightFrom(pos: Position): seq<Position>
 	if pos.0 == 0 || pos.1 == 7 then [pos] else [pos]+VectorPositionsUpRightFrom((pos.0-1,pos.1+1))
 }
 
-function VectorPositionsRightFrom(pos: Position): seq<Position>
+function method VectorPositionsRightFrom(pos: Position): seq<Position>
 	requires pos in ValidPositions()
 	ensures var result := VectorPositionsRightFrom(pos);
 		forall pos :: pos in result ==> ValidPosition(pos)
@@ -240,7 +240,7 @@ function VectorPositionsRightFrom(pos: Position): seq<Position>
 	if pos.1 == 7 then [pos] else [pos]+VectorPositionsRightFrom((pos.0,pos.1+1))
 }
 
-function VectorPositionsDownRightFrom(pos: Position): seq<Position>
+function method VectorPositionsDownRightFrom(pos: Position): seq<Position>
 	requires pos in ValidPositions()
 	ensures var result := VectorPositionsDownRightFrom(pos);
 		forall pos :: pos in result ==> ValidPosition(pos)
@@ -249,7 +249,7 @@ function VectorPositionsDownRightFrom(pos: Position): seq<Position>
 	if pos.0 == 7 || pos.1 == 7 then [pos] else [pos]+VectorPositionsDownRightFrom((pos.0+1,pos.1+1))
 }
 
-function VectorPositionsDownFrom(pos: Position): seq<Position>
+function method VectorPositionsDownFrom(pos: Position): seq<Position>
 	requires pos in ValidPositions()
 	ensures var result := VectorPositionsDownFrom(pos);
 		forall pos :: pos in result ==> ValidPosition(pos)
@@ -258,7 +258,7 @@ function VectorPositionsDownFrom(pos: Position): seq<Position>
 	if pos.0 == 7 then [pos] else [pos]+VectorPositionsDownFrom((pos.0+1,pos.1))
 }
 
-function VectorPositionsDownLeftFrom(pos: Position): seq<Position>
+function method VectorPositionsDownLeftFrom(pos: Position): seq<Position>
 	requires pos in ValidPositions()
 	ensures var result := VectorPositionsDownLeftFrom(pos);
 		forall pos :: pos in result ==> ValidPosition(pos)
@@ -268,7 +268,7 @@ function VectorPositionsDownLeftFrom(pos: Position): seq<Position>
 }
 
 
-function VectorPositionsLeftFrom(pos: Position): seq<Position>
+function method VectorPositionsLeftFrom(pos: Position): seq<Position>
 	requires pos in ValidPositions()
 	ensures var result := VectorPositionsLeftFrom(pos);
 		forall pos :: pos in result ==> ValidPosition(pos)
@@ -277,7 +277,7 @@ function VectorPositionsLeftFrom(pos: Position): seq<Position>
 	if pos.1 == 0 then [pos] else [pos]+VectorPositionsLeftFrom((pos.0,pos.1-1))
 }
 
-function VectorPositionsUpLeftFrom(pos: Position): seq<Position>
+function method VectorPositionsUpLeftFrom(pos: Position): seq<Position>
 	requires pos in ValidPositions()
 	ensures var result := VectorPositionsUpLeftFrom(pos);
 		forall pos :: pos in result ==> ValidPosition(pos)
@@ -323,7 +323,7 @@ lemma LemmaInitBlackHasLegalMoves(b: Board)
 	}
 }
 
-method canReverseUpFrom(b: Board, player: Disk, move: Position) returns (reversiblePositions : seq<Position>)
+/*method canReverseUpFrom(b: Board, player: Disk, move: Position) returns (reversiblePositions : seq<Position>)
 	requires ValidBoard(b) && LegalMove(b, player, move)
 	ensures |reversiblePositions|>0 ==> Up in ReversibleDirections(b, player, move)
 	ensures ReversibleVectorFrom(b, player, move, Up) ==> forall pos :: pos in reversiblePositions  ==>  pos in ReversibleVectorPositions(b, player, move, Up)
@@ -505,7 +505,7 @@ method canReverseLeftFrom(b: Board, player: Disk, move: Position) returns (rever
 	assume dirValid || col < 0 || (move.0, col) !in b; //one of these has to be true or else we would be in a infinite loop
 	assume  ReversibleVectorFrom(b, player, move, Left) ==> forall pos :: pos in reversiblePositions  ==>  pos in ReversibleVectorPositions(b, player, move, Left);
 	assume |reversiblePositions|>0 ==> Left in ReversibleDirections(b, player, move);
-}
+}*/
 
 method getOpponent(player: Disk) returns (opp : Disk) 
 {
@@ -516,38 +516,54 @@ method getOpponent(player: Disk) returns (opp : Disk)
 	opp := White;
 	}
 }
-method canReverseInDir(b: Board, player: Disk, move: Position, dir: Direction) returns (is : bool)
+method canReverseInDir(b: Board, player: Disk, move: Position, dir: Direction, reversiblePos : set<Position>) returns (is : bool)
 	requires ValidBoard(b) && LegalMove(b, player, move)
 	ensures is == true ==> dir in ReversibleDirections(b, player, move)
 {
+	is := false;
 	assert ValidBoard(b) && LegalMove(b, player, move);
 	if(dir == Up){
-		//is := canReverseUpFrom(b,player,move);
+		if( (move.0-1, move.1) in reversiblePos){
+			is := true;
+		}
 	}
 	else if(dir == UpRight){
-	//	is := canReverseFrom(b,player,move,UpRight,1,1);
+		if( (move.0-1, move.1+1) in reversiblePos){
+			is := true;
+		}
 	}
 	else if(dir == Right){
-		//is := canReverseFrom(b,player,move,Right,0,1);
+		if( (move.0, move.1+1) in reversiblePos){
+			is := true;
+		}
 	}
 	else if(dir == DownRight){
-	//	is := canReverseFrom(b,player,move,DownRight,-1,1);
+		if( (move.0+1, move.1+1) in reversiblePos){
+			is := true;
+		}
 	}
 	else if(dir == Down){
-	//	is := canReverseFrom(b,player,move,Down,-1,0);
+			if( (move.0+1, move.1) in reversiblePos){
+			is := true;
+		}
 	}
 	else if(dir == DownLeft){
-	//	is := canReverseFrom(b,player,move,DownLeft,-1,-1);	
+		if( (move.0+1, move.1-1) in reversiblePos){
+			is := true;
+		}
 	}
 	else if(dir == Left){
-	//	is := canReverseFrom(b,player,move,Left,0,-1);	
+		if( (move.0, move.1-1) in reversiblePos){
+			is := true;
+		}
 	}
 	else if(dir == UpLeft){
-	//	is := canReverseFrom(b,player,move,UpLeft,1,-1);
+		if( (move.0-1, move.1-1) in reversiblePos){
+			is := true;
+		}
 	}
 	else{
 		is := false;
-	//wont get here but just for proof do nothing
 	}
 	assume is == true ==> dir in ReversibleDirections(b, player, move);
 }
@@ -634,6 +650,7 @@ method FindAllLegalDirectionsFrom(b: Board, player: Disk, move: Position) return
 	ensures directions == ReversibleDirections(b, player, move)
 {
 	assert ValidBoard(b) && LegalMove(b, player, move);
+	var reversiblePositions := FindAllReversiblePositionsFrom(b,player,move);
 	var directionsToCheck : set<Direction>  := { Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft};
 	directions := {};
 	while directionsToCheck != {}
@@ -641,7 +658,7 @@ method FindAllLegalDirectionsFrom(b: Board, player: Disk, move: Position) return
 	invariant  forall d :: d in directions ==> d !in directionsToCheck && forall d :: d in directions ==> d in ReversibleDirections(b, player, move)
 	{
 		var dir :| dir in directionsToCheck;
-		var isReversible := canReverseInDir(b,player,move,dir);
+		var isReversible := canReverseInDir(b,player,move,dir,reversiblePositions);
 		if(isReversible){
 			directions := directions + {dir};
 		}
@@ -658,15 +675,28 @@ method FindAllLegalDirectionsFrom(b: Board, player: Disk, move: Position) return
 method FindAllReversiblePositionsFrom(b: Board, player: Disk, move: Position) returns (positions: set<Position>)
 	requires ValidBoard(b) && LegalMove(b, player, move)
 	ensures positions == ReversiblePositionsFrom(b, player, move)
+	{
+		positions := ReversiblePositionsFrom(b,player,move);
+	}
 
 method FindAllLegalMoves(b: Board, player: Disk) returns (moves: set<Position>)
 	requires ValidBoard(b)
 	ensures moves == AllLegalMoves(b, player)
-/*{
+{
 	assert ValidBoard(b);
+	var positionsToCheck : set<Position> := ValidPositions();
+	ghost var positionsChecked : set<Position> := {};
+	while positionsToCheck != {}
+	decreases positionsToCheck
+	invariant true
+	{
+		var pos : Position :| pos in positionsToCheck;
+		
+		positionsToCheck := positionsToCheck - {pos};
 
+	}
 	assert moves == AllLegalMoves(b, player);
-}*/
+}
 
 
 method PerformMove(b0: Board, player: Disk, move: Position) returns (b: Board)
