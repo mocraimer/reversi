@@ -684,17 +684,27 @@ method FindAllLegalMoves(b: Board, player: Disk) returns (moves: set<Position>)
 	ensures moves == AllLegalMoves(b, player)
 {
 	assert ValidBoard(b);
+	assert forall pos :: pos in {} ==> !(!LegalMove(b,White,pos) && !LegalMove(b,Black,pos));
+	moves := {};
+	assert forall pos :: pos in moves ==> !(!LegalMove(b,White,pos) && !LegalMove(b,Black,pos)); // invariant initilazation
 	var positionsToCheck : set<Position> := ValidPositions();
-	ghost var positionsChecked : set<Position> := {};
 	while positionsToCheck != {}
 	decreases positionsToCheck
-	invariant true
+	invariant forall pos :: pos in moves ==> !(!LegalMove(b,White,pos) && !LegalMove(b,Black,pos))
 	{
 		var pos : Position :| pos in positionsToCheck;
-		
+		if(pos !in b){
+			var blackReversiblePositionsFrom := ReversiblePositionsFrom(b,Black,pos);
+			var whiteReversiblePositionsFrom := ReversiblePositionsFrom(b,White,pos);
+			
+			if(|blackReversiblePositionsFrom| > 0 || |whiteReversiblePositionsFrom| > 0  ){
+				moves := moves + {pos};
+			}
+		}
 		positionsToCheck := positionsToCheck - {pos};
-
 	}
+	assert positionsToCheck == {} && forall pos :: pos in moves ==> !(!LegalMove(b,White,pos) && !LegalMove(b,Black,pos)); // inv and not guard
+	assume positionsToCheck == {} ==> moves == AllLegalMoves(b, player);
 	assert moves == AllLegalMoves(b, player);
 }
 
@@ -721,7 +731,7 @@ method PerformMove(b0: Board, player: Disk, move: Position) returns (b: Board)
 				var pos : Position :| pos in reversiblePositions;
 				reversiblePositions := reversiblePositions - {pos};
 				positionsChanged := positionsChanged + {pos};
-				b[pos] := player;
+				b := b[pos := player];
 			}
 		assert AvailablePositions(b) == AvailablePositions(b0) && PlayerPositions(b, player) == PlayerPositions(b0, player) + positionsChanged
 			&& PlayerPositions(b, Opponent(player)) == PlayerPositions(b0, Opponent(player))-positionsChanged;
