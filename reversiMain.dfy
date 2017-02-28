@@ -705,3 +705,33 @@ method PerformMove(b0: Board, player: Disk, move: Position) returns (b: Board)
 	ensures AvailablePositions(b) == AvailablePositions(b0)-{move}
 	ensures PlayerPositions(b, player) == PlayerPositions(b0, player)+ReversiblePositionsFrom(b0, player, move)+{move}
 	ensures PlayerPositions(b, Opponent(player)) == PlayerPositions(b0, Opponent(player))-ReversiblePositionsFrom(b0, player, move)
+	{
+		assert ValidBoard(b0) && LegalMove(b0, player, move);
+		b := b0;
+		assert AvailablePositions(b) == AvailablePositions(b0);
+		assert PlayerPositions(b, player) == PlayerPositions(b0, player);
+		assert PlayerPositions(b, Opponent(player)) == PlayerPositions(b0, Opponent(player));
+		var reversiblePositions := ReversiblePositionsFrom(b0, player, move);
+		ghost var positionsChanged := {}; 
+		while (reversiblePositions != {} )
+			decreases reversiblePositions
+			invariant AvailablePositions(b) == AvailablePositions(b0) && PlayerPositions(b, player) == PlayerPositions(b0, player) + positionsChanged
+			&& PlayerPositions(b, Opponent(player)) == PlayerPositions(b0, Opponent(player))-positionsChanged
+			{
+				var pos : Position :| pos in reversiblePositions;
+				reversiblePositions := reversiblePositions - {pos};
+				positionsChanged := positionsChanged + {pos};
+				b[pos] := player;
+			}
+		assert AvailablePositions(b) == AvailablePositions(b0) && PlayerPositions(b, player) == PlayerPositions(b0, player) + positionsChanged
+			&& PlayerPositions(b, Opponent(player)) == PlayerPositions(b0, Opponent(player))-positionsChanged;
+		assert positionsChanged == ReversiblePositionsFrom(b0, player, move);
+		assert AvailablePositions(b) == AvailablePositions(b0);
+		assert ValidBoard(b0) && LegalMove(b0, player, move);
+		b := b[move := player];
+		assert ValidBoard(b);
+		assert AvailablePositions(b) == AvailablePositions(b0)-{move};
+		assert PlayerPositions(b, player) == PlayerPositions(b0, player)+ReversiblePositionsFrom(b0, player, move)+{move};
+		assert PlayerPositions(b, Opponent(player)) == PlayerPositions(b0, Opponent(player))-ReversiblePositionsFrom(b0, player, move);
+		
+	}
